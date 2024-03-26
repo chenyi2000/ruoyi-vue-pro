@@ -100,4 +100,7 @@ public interface ErrorCodeConstants {
     ErrorCode FOLLOW_UP_RECORD_NOT_EXISTS = new ErrorCode(1_020_013_000, "跟进记录不存在");
     ErrorCode FOLLOW_UP_RECORD_DELETE_DENIED = new ErrorCode(1_020_013_001, "删除跟进记录失败，原因：没有权限");
 
+
+    // ========== CRM 产品单位 1_020_013_000 ==========
+    ErrorCode PRODUCT_UNIT_NOT_EXISTS = new ErrorCode(1_020_013_000, "CRM 产品单位不存在");
 }

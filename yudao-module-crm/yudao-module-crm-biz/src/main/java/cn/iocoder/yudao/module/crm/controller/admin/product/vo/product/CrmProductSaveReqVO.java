@@ -26,9 +26,10 @@ public class CrmProductSaveReqVO {
     @DiffLogField(name = "产品编码")
     private String no;
 
-    @Schema(description = "单位", example = "2")
-    @DiffLogField(name = "单位", function = CrmProductUnitParseFunction.NAME)
-    private Integer unit;
+    @Schema(description = "单位编号", requiredMode = Schema.RequiredMode.REQUIRED, example = "8869")
+    @NotNull(message = "单位编号不能为空")
+    @DiffLogField(name = "单位")
+    private Long unitId;
 
     @Schema(description = "价格", requiredMode = Schema.RequiredMode.REQUIRED, example = "8911")
     @NotNull(message = "价格不能为空")

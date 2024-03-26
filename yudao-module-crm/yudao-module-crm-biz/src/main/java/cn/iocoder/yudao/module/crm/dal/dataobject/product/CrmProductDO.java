@@ -41,9 +41,9 @@ public class CrmProductDO extends BaseDO {
     /**
      * 单位
      *
-     * 字典 {@link DictTypeConstants#CRM_PRODUCT_UNIT}
+     * 关联 {@link CrmProductUnitDO#getId()} 字段
      */
-    private Integer unit;
+    private Long unitId;
     /**
      * 价格，单位：元
      */

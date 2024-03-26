@@ -2,6 +2,7 @@ package cn.iocoder.yudao.module.crm.service.product;
 
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.module.crm.controller.admin.product.vo.product.CrmProductPageReqVO;
+import cn.iocoder.yudao.module.crm.controller.admin.product.vo.product.CrmProductRespVO;
 import cn.iocoder.yudao.module.crm.controller.admin.product.vo.product.CrmProductSaveReqVO;
 import cn.iocoder.yudao.module.crm.dal.dataobject.product.CrmProductDO;
 
@@ -89,7 +90,7 @@ public interface CrmProductService {
      * @param status 状态
      * @return 产品列表
      */
-    List<CrmProductDO> getProductListByStatus(Integer status);
+    List<CrmProductRespVO> getProductListByStatus(Integer status);
 
     /**
      * 校验产品们的有效性

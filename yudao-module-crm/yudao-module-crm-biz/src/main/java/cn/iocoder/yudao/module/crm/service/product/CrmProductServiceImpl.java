@@ -2,11 +2,14 @@ package cn.iocoder.yudao.module.crm.service.product;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
+import cn.iocoder.yudao.framework.common.util.collection.MapUtils;
 import cn.iocoder.yudao.framework.common.util.object.BeanUtils;
 import cn.iocoder.yudao.module.crm.controller.admin.product.vo.product.CrmProductPageReqVO;
+import cn.iocoder.yudao.module.crm.controller.admin.product.vo.product.CrmProductRespVO;
 import cn.iocoder.yudao.module.crm.controller.admin.product.vo.product.CrmProductSaveReqVO;
 import cn.iocoder.yudao.module.crm.dal.dataobject.product.CrmProductCategoryDO;
 import cn.iocoder.yudao.module.crm.dal.dataobject.product.CrmProductDO;
+import cn.iocoder.yudao.module.crm.dal.dataobject.product.CrmProductUnitDO;
 import cn.iocoder.yudao.module.crm.dal.mysql.product.CrmProductMapper;
 import cn.iocoder.yudao.module.crm.enums.common.CrmBizTypeEnum;
 import cn.iocoder.yudao.module.crm.enums.permission.CrmPermissionLevelEnum;
@@ -30,6 +33,7 @@ import java.util.Map;
 
 import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionUtil.exception;
 import static cn.iocoder.yudao.framework.common.util.collection.CollectionUtils.convertMap;
+import static cn.iocoder.yudao.framework.common.util.collection.CollectionUtils.convertSet;
 import static cn.iocoder.yudao.module.crm.enums.ErrorCodeConstants.*;
 import static cn.iocoder.yudao.module.crm.enums.LogRecordConstants.*;
 
@@ -48,6 +52,8 @@ public class CrmProductServiceImpl implements CrmProductService {
 
     @Resource
     private CrmProductCategoryService productCategoryService;
+    @Resource
+    private CrmProductUnitService productUnitService;
     @Resource
     private CrmPermissionService permissionService;
 
@@ -149,8 +155,32 @@ public class CrmProductServiceImpl implements CrmProductService {
     }
 
     @Override
-    public List<CrmProductDO> getProductListByStatus(Integer status) {
-        return productMapper.selectListByStatus(status);
+    public List<CrmProductRespVO> getProductListByStatus(Integer status) {
+        List<CrmProductDO> list = productMapper.selectListByStatus(status);
+        return buildProductVOList(list);
+    }
+
+    /**
+     * 构建产品VO列表
+     * @author  Chen Yi
+     * @date  2024/3/21 9:04
+     * @param list CRM 产品 DO
+     * @return  List<CrmProductRespVO> 产品VO列表
+     */
+    private List<CrmProductRespVO> buildProductVOList(List<CrmProductDO> list) {
+        if (CollUtil.isEmpty(list)) {
+            return Collections.emptyList();
+        }
+        Map<Long, CrmProductCategoryDO> categoryMap = productCategoryService.getProductCategoryMap(
+                convertSet(list, CrmProductDO::getCategoryId));
+        Map<Long, CrmProductUnitDO> unitMap = productUnitService.getProductUnitMap(
+                convertSet(list, CrmProductDO::getUnitId));
+        return BeanUtils.toBean(list, CrmProductRespVO.class, product -> {
+            MapUtils.findAndThen(categoryMap, product.getCategoryId(),
+                    category -> product.setCategoryName(category.getName()));
+            MapUtils.findAndThen(unitMap, product.getUnitId(),
+                    unit -> product.setUnitName(unit.getName()));
+        });
     }
 
     @Override

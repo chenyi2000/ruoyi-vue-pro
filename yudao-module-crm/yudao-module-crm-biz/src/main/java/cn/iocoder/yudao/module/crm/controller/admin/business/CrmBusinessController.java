@@ -122,7 +122,7 @@ public class CrmBusinessController {
         businessVO.setProducts(BeanUtils.toBean(businessProducts, CrmBusinessRespVO.Product.class, businessProductVO ->
                 MapUtils.findAndThen(productMap, businessProductVO.getProductId(),
                         product -> businessProductVO.setProductName(product.getName())
-                                .setProductNo(product.getNo()).setProductUnit(product.getUnit()))));
+                                .setProductNo(product.getNo()).setProductUnit(product.getUnitId()))));
         return businessVO;
     }
 

@@ -123,7 +123,7 @@ public class CrmContractController {
         contractVO.setProducts(BeanUtils.toBean(businessProducts, CrmContractRespVO.Product.class, businessProductVO ->
                 MapUtils.findAndThen(productMap, businessProductVO.getProductId(),
                         product -> businessProductVO.setProductName(product.getName())
-                                .setProductNo(product.getNo()).setProductUnit(product.getUnit()))));
+                                .setProductNo(product.getNo()).setProductUnit(product.getUnitId()))));
         return contractVO;
     }
 

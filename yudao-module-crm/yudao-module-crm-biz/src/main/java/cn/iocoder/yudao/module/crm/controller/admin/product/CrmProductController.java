@@ -13,9 +13,11 @@ import cn.iocoder.yudao.module.crm.controller.admin.product.vo.product.CrmProduc
 import cn.iocoder.yudao.module.crm.controller.admin.product.vo.product.CrmProductSaveReqVO;
 import cn.iocoder.yudao.module.crm.dal.dataobject.product.CrmProductCategoryDO;
 import cn.iocoder.yudao.module.crm.dal.dataobject.product.CrmProductDO;
+import cn.iocoder.yudao.module.crm.dal.dataobject.product.CrmProductUnitDO;
 import cn.iocoder.yudao.module.crm.enums.product.CrmProductStatusEnum;
 import cn.iocoder.yudao.module.crm.service.product.CrmProductCategoryService;
 import cn.iocoder.yudao.module.crm.service.product.CrmProductService;
+import cn.iocoder.yudao.module.crm.service.product.CrmProductUnitService;
 import cn.iocoder.yudao.module.system.api.user.AdminUserApi;
 import cn.iocoder.yudao.module.system.api.user.dto.AdminUserRespDTO;
 import io.swagger.v3.oas.annotations.Operation;
@@ -49,6 +51,8 @@ public class CrmProductController {
     private CrmProductService productService;
     @Resource
     private CrmProductCategoryService productCategoryService;
+    @Resource
+    private CrmProductUnitService productUnitService;
 
     @Resource
     private AdminUserApi adminUserApi;
@@ -96,9 +100,9 @@ public class CrmProductController {
     @GetMapping("/simple-list")
     @Operation(summary = "获得产品精简列表", description = "只包含被开启的产品，主要用于前端的下拉选项")
     public CommonResult<List<CrmProductRespVO>> getProductSimpleList() {
-        List<CrmProductDO> list = productService.getProductListByStatus(CrmProductStatusEnum.ENABLE.getStatus());
+        List<CrmProductRespVO> list = productService.getProductListByStatus(CrmProductStatusEnum.ENABLE.getStatus());
         return success(convertList(list, product -> new CrmProductRespVO().setId(product.getId()).setName(product.getName())
-                .setUnit(product.getUnit()).setNo(product.getNo()).setPrice(product.getPrice())));
+                .setUnitId(product.getUnitId()).setUnitName(product.getUnitName()).setNo(product.getNo()).setPrice(product.getPrice())));
     }
 
     @GetMapping("/page")
@@ -132,6 +136,9 @@ public class CrmProductController {
         // 1.2 获得分类信息
         Map<Long, CrmProductCategoryDO> categoryMap = productCategoryService.getProductCategoryMap(
                 convertSet(list, CrmProductDO::getCategoryId));
+        // 1.3 获取单位信息
+        Map<Long, CrmProductUnitDO> unitMap = productUnitService.getProductUnitMap(
+                convertSet(list, CrmProductDO::getUnitId));
         // 2. 拼接数据
         return BeanUtils.toBean(list, CrmProductRespVO.class, productVO -> {
             // 2.1 设置用户信息
@@ -139,6 +146,8 @@ public class CrmProductController {
             MapUtils.findAndThen(userMap, Long.valueOf(productVO.getCreator()), user -> productVO.setCreatorName(user.getNickname()));
             // 2.2 设置分类名称
             MapUtils.findAndThen(categoryMap, productVO.getCategoryId(), category -> productVO.setCategoryName(category.getName()));
+            // 2.3 设置单位信息
+            MapUtils.findAndThen(unitMap, productVO.getUnitId(), unit -> productVO.setUnitName(unit.getName()));
         });
     }
 
