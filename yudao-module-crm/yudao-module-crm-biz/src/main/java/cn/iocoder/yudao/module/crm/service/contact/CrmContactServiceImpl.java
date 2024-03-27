@@ -269,7 +269,7 @@ public class CrmContactServiceImpl implements CrmContactService {
     public List<CrmContactDO> getContactList(Long userId) {
         CrmContactPageReqVO reqVO = new CrmContactPageReqVO();
         reqVO.setPageSize(PAGE_SIZE_NONE); // 不分页
-        return contactMapper.selectPage(reqVO, userId).getList();
+        return contactMapper.selectPage(reqVO, 1L).getList();
     }
 
     @Override

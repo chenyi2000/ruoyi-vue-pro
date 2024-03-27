@@ -59,31 +59,31 @@ public class CrmPermissionUtils {
                     .eq(CrmPermissionDO::getUserId, userId));
         }
         // 2.1 场景一：我负责的数据
-        if (CrmSceneTypeEnum.isOwner(sceneType)) {
-            query.eq(ownerUserIdField, userId);
-        }
+        // if (CrmSceneTypeEnum.isOwner(sceneType)) {
+        //     query.eq(ownerUserIdField, userId);
+        // }
         // 2.2 场景二：我参与的数据
-        if (CrmSceneTypeEnum.isInvolved(sceneType)) {
-            query.ne(ownerUserIdField, userId)
-                    .in(CrmPermissionDO::getLevel, CrmPermissionLevelEnum.READ.getLevel(), CrmPermissionLevelEnum.WRITE.getLevel());
-        }
+        // if (CrmSceneTypeEnum.isInvolved(sceneType)) {
+        //     query.ne(ownerUserIdField, userId)
+        //             .in(CrmPermissionDO::getLevel, CrmPermissionLevelEnum.READ.getLevel(), CrmPermissionLevelEnum.WRITE.getLevel());
+        // }
         // 2.3 场景三：下属负责的数据
-        if (CrmSceneTypeEnum.isSubordinate(sceneType)) {
-            AdminUserApi adminUserApi = SpringUtil.getBean(AdminUserApi.class);
-            List<AdminUserRespDTO> subordinateUsers = adminUserApi.getUserListBySubordinate(userId);
-            if (CollUtil.isEmpty(subordinateUsers)) {
-                query.eq(ownerUserIdField, -1); // 不返回任何结果
-            } else {
-                query.in(ownerUserIdField, convertSet(subordinateUsers, AdminUserRespDTO::getId));
-            }
-        }
+        // if (CrmSceneTypeEnum.isSubordinate(sceneType)) {
+        //     AdminUserApi adminUserApi = SpringUtil.getBean(AdminUserApi.class);
+        //     List<AdminUserRespDTO> subordinateUsers = adminUserApi.getUserListBySubordinate(userId);
+        //     if (CollUtil.isEmpty(subordinateUsers)) {
+        //         query.eq(ownerUserIdField, -1); // 不返回任何结果
+        //     } else {
+        //         query.in(ownerUserIdField, convertSet(subordinateUsers, AdminUserRespDTO::getId));
+        //     }
+        // }
 
         // 3. 拼接公海的查询条件
-        if (ObjUtil.equal(pool, Boolean.TRUE)) { // 情况一：公海
-            query.isNull(ownerUserIdField);
-        } else { // 情况二：不是公海
-            query.isNotNull(ownerUserIdField);
-        }
+        // if (ObjUtil.equal(pool, Boolean.TRUE)) { // 情况一：公海
+        //     query.isNull(ownerUserIdField);
+        // } else { // 情况二：不是公海
+        //     query.isNotNull(ownerUserIdField);
+        // }
     }
 
     /**

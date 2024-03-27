@@ -159,11 +159,11 @@ public class CrmContactController {
                 convertSet(contactList, CrmContactDO::getCustomerId));
         // 1.2 获取创建人、负责人列表
         Map<Long, AdminUserRespDTO> userMap = adminUserApi.getUserMap(convertListByFlatMap(contactList,
-                contact -> Stream.of(NumberUtils.parseLong(contact.getCreator()), contact.getOwnerUserId())));
-        Map<Long, DeptRespDTO> deptMap = deptApi.getDeptMap(convertSet(userMap.values(), AdminUserRespDTO::getDeptId));
+                contact -> Stream.of(NumberUtils.parseLong(contact.getCreator()))));
+        // Map<Long, DeptRespDTO> deptMap = deptApi.getDeptMap(convertSet(userMap.values(), AdminUserRespDTO::getDeptId));
         // 1.3 直属上级 Map
-        Map<Long, CrmContactDO> parentContactMap = contactService.getContactMap(
-                convertSet(contactList, CrmContactDO::getParentId));
+        // Map<Long, CrmContactDO> parentContactMap = contactService.getContactMap(
+        //         convertSet(contactList, CrmContactDO::getParentId));
         // 2. 转换成 VO
         return BeanUtils.toBean(contactList, CrmContactRespVO.class, contactVO -> {
             contactVO.setAreaName(AreaUtils.format(contactVO.getAreaId()));
@@ -172,12 +172,12 @@ public class CrmContactController {
             // 2.2 设置创建人、负责人名称
             MapUtils.findAndThen(userMap, NumberUtils.parseLong(contactVO.getCreator()),
                     user -> contactVO.setCreatorName(user.getNickname()));
-            MapUtils.findAndThen(userMap, contactVO.getOwnerUserId(), user -> {
-                contactVO.setOwnerUserName(user.getNickname());
-                MapUtils.findAndThen(deptMap, user.getDeptId(), dept -> contactVO.setOwnerUserDeptName(dept.getName()));
-            });
+            // MapUtils.findAndThen(userMap, contactVO.getOwnerUserId(), user -> {
+            //     contactVO.setOwnerUserName(user.getNickname());
+            //     MapUtils.findAndThen(deptMap, user.getDeptId(), dept -> contactVO.setOwnerUserDeptName(dept.getName()));
+            // });
             // 2.3 设置直属上级名称
-            findAndThen(parentContactMap, contactVO.getParentId(), contact -> contactVO.setParentName(contact.getName()));
+            // findAndThen(parentContactMap, contactVO.getParentId(), contact -> contactVO.setParentName(contact.getName()));
         });
     }
 

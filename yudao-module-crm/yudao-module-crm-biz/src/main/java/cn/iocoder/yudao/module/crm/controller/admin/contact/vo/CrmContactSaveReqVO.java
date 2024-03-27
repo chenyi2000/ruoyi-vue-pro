@@ -37,7 +37,6 @@ public class CrmContactSaveReqVO {
     private LocalDateTime contactNextTime;
 
     @Schema(description = "负责人用户编号", example = "14334")
-    @NotNull(message = "负责人不能为空")
     @DiffLogField(name = "负责人", function = SysAdminUserParseFunction.NAME)
     private Long ownerUserId;
 
